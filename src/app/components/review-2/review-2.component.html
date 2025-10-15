@@ -1,0 +1,73 @@
+<div class="review-analytics-container">
+  <h2>Review Analytics Dashboard</h2>
+  
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner">Loading reviews...</div>
+  </div>
+
+  <div class="stats-section" *ngIf="!isLoading">
+    <h3>Overall Rating Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.average | number:'1.1-1' }}</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ stats.total }}</div>
+        <div class="stat-label">Total Reviews</div>
+      </div>
+    </div>
+    
+    <div class="distribution-chart">
+      <h4>Rating Distribution</h4>
+      <div *ngFor="let rating of [5,4,3,2,1]" class="rating-bar">
+        <span class="rating-label">{{ rating }} ★</span>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="stats.distribution[rating] || 0"></div>
+        </div>
+        <span class="percentage">{{ (stats.distribution[rating] || 0) | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-section" *ngIf="!isLoading">
+    <h3>Filter Reviews</h3>
+    <div class="filter-buttons">
+      <button 
+        *ngFor="let filter of ['all', 'verified', 'high-rating', 'low-rating']"
+        (click)="filterReviews(filter)"
+        [class.active]="activeFilter === filter"
+        class="filter-button"
+      >
+        {{ replaceHyphenWithSpace(filter | titlecase) }}
+      </button>
+    </div>
+  </div>
+
+  <div class="reviews-list" *ngIf="!isLoading">
+    <h3>Reviews ({{ filteredReviews.length }})</h3>
+    <div *ngFor="let review of filteredReviews; trackBy: trackByReviewId" class="review-card">
+      <div class="review-header">
+        <div class="rating-stars">
+          <span 
+            *ngFor="let star of getStarArray(review.rating); let i = index"
+            [class.filled]="star"
+            class="star"
+          >
+            ★
+          </span>
+        </div>
+        <span class="verified-badge" *ngIf="review.verified">✓ Verified</span>
+        <span class="review-date">{{ review.date | date:'shortDate' }}</span>
+      </div>
+      
+      <h4 class="review-title">{{ review.title }}</h4>
+      <p class="review-content">{{ review.content }}</p>
+      
+      <div class="review-footer">
+        <span class="author">By {{ review.author }}</span>
+        <span class="helpful">{{ review.helpful }} found helpful</span>
+      </div>
+    </div>
+  </div>
+</div>

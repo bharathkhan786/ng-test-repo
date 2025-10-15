@@ -1,0 +1,71 @@
+<div class="wishlist-container">
+  <h2>My Wishlist</h2>
+
+  <div *ngIf="wishlist$ | async as wishlist; else emptyWishlist">
+    <div *ngIf="wishlist.items.length > 0; else emptyWishlist" class="wishlist-content">
+      <div class="wishlist-header">
+        <span>{{ wishlist.totalItems }} item(s) in your wishlist</span>
+        <button (click)="clearWishlist()" class="clear-button">Clear All</button>
+      </div>
+
+      <div class="wishlist-items">
+        <div *ngFor="let item of wishlist.items" class="wishlist-item">
+          <div class="item-image">
+            <img [src]="item.product.imageUrl" [alt]="item.product.name">
+            <div class="item-badges">
+              <span *ngIf="!item.product.inStock" class="badge out-of-stock">Out of Stock</span>
+              <span *ngIf="item.product.discountPrice" class="badge discount">Sale</span>
+            </div>
+          </div>
+
+          <div class="item-details">
+            <h3 class="item-name">{{ item.product.name }}</h3>
+            <p class="item-description">{{ item.product.description }}</p>
+            
+            <div class="item-rating">
+              <span class="rating-stars">★★★★☆</span>
+              <span class="rating-count">({{ item.product.reviewCount }})</span>
+            </div>
+
+            <div class="item-pricing">
+              <span class="current-price">
+                ${{ item.product.discountPrice || item.product.price }}
+              </span>
+              <span *ngIf="item.product.discountPrice" class="original-price">
+                ${{ item.product.price }}
+              </span>
+            </div>
+
+            <div class="item-meta">
+              <small>Added on {{ item.addedAt | date:'mediumDate' }}</small>
+              <p *ngIf="item.notes" class="item-notes">{{ item.notes }}</p>
+            </div>
+          </div>
+
+          <div class="item-actions">
+            <button
+              (click)="addToCart(item)"
+              [disabled]="!item.product.inStock"
+              class="add-to-cart-button"
+            >
+              <span *ngIf="item.product.inStock">Add to Cart</span>
+              <span *ngIf="!item.product.inStock">Out of Stock</span>
+            </button>
+            
+            <button (click)="removeFromWishlist(item.product.id)" class="remove-button">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyWishlist>
+    <div class="empty-wishlist">
+      <h3>Your wishlist is empty</h3>
+      <p>Browse our products and add items to your wishlist!</p>
+      <a routerLink="/products" class="continue-shopping-button">Browse Products</a>
+    </div>
+  </ng-template>
+</div>

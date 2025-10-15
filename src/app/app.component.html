@@ -1,0 +1,60 @@
+<div class="app-container">
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/products">eCommerce Store</a>
+      </div>
+
+      <nav class="main-navigation">
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+        
+        <div class="dropdown" *ngIf="isAuthenticated$ | async">
+          <a href="#" class="dropdown-toggle">Reviews</a>
+          <div class="dropdown-menu">
+            <a routerLink="/reviews/form">Write Review</a>
+            <a routerLink="/reviews/analytics">Analytics</a>
+            <a routerLink="/reviews/moderation">Moderation</a>
+            <a routerLink="/reviews/search">Search</a>
+            <a routerLink="/reviews/dashboard">Dashboard</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="header-actions">
+        <div *ngIf="isAuthenticated$ | async; else authButtons" class="user-actions">
+          <button (click)="navigateToWishlist()" class="icon-button">
+            <span class="icon">♥</span>
+            <span class="count" *ngIf="wishlistItemCount > 0">{{ wishlistItemCount }}</span>
+          </button>
+
+          <button (click)="navigateToCart()" class="icon-button">
+            <span class="icon">🛒</span>
+            <span class="count" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+          </button>
+
+          <div class="user-menu">
+            <span class="user-name">{{ (currentUser$ | async)?.firstName }}</span>
+            <button (click)="logout()" class="logout-button">Logout</button>
+          </div>
+        </div>
+
+        <ng-template #authButtons>
+          <div class="auth-buttons">
+            <a routerLink="/login" class="auth-link">Login</a>
+            <a routerLink="/signup" class="auth-link signup">Sign Up</a>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <p>&copy; 2024 eCommerce Store. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,78 @@
+<div class="product-list-container">
+  <div class="filters-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+        placeholder="Search products..."
+        class="search-input"
+      >
+      <button (click)="onSearch()" class="search-button">Search</button>
+    </div>
+
+    <div class="filter-controls">
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()" class="filter-select">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories$ | async" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="sortBy" class="filter-select">
+        <option value="name">Sort by Name</option>
+        <option value="price">Sort by Price</option>
+        <option value="rating">Sort by Rating</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="products-section">
+    <div *ngIf="isLoading" class="loading-spinner">
+      Loading products...
+    </div>
+
+    <div class="products-grid" *ngIf="!isLoading">
+      <div *ngFor="let product of products$ | async" class="product-card">
+        <div class="product-image">
+          <img [src]="product.imageUrl" [alt]="product.name">
+          <div class="product-badges">
+            <span *ngIf="!product.inStock" class="badge out-of-stock">Out of Stock</span>
+            <span *ngIf="hasDiscount(product)" class="badge discount">Sale</span>
+          </div>
+          <button
+            class="wishlist-button"
+            [class.active]="isInWishlist(product.id)"
+            (click)="onToggleWishlist(product)"
+          >
+            ♥
+          </button>
+        </div>
+
+        <div class="product-info">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+          
+          <div class="product-rating">
+            <span class="rating-stars">★★★★☆</span>
+            <span class="rating-count">({{ product.reviewCount }})</span>
+          </div>
+
+          <div class="product-pricing">
+            <span class="current-price">${{ getDisplayPrice(product) }}</span>
+            <span *ngIf="hasDiscount(product)" class="original-price">${{ product.price }}</span>
+          </div>
+
+          <button
+            class="add-to-cart-button"
+            [disabled]="!product.inStock"
+            (click)="onAddToCart(product)"
+          >
+            <span *ngIf="product.inStock">Add to Cart</span>
+            <span *ngIf="!product.inStock">Out of Stock</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="moderation-dashboard">
+  <h2>Review Moderation Dashboard</h2>
+  
+  <div class="dashboard-controls">
+    <div class="auto-refresh-control">
+      <label>
+        <input type="checkbox" [(ngModel)]="autoRefresh" (change)="toggleAutoRefresh()">
+        Auto-refresh ({{ refreshInterval / 1000 }}s)
+      </label>
+      <small>Last updated: {{ lastUpdated | date:'medium' }}</small>
+    </div>
+    
+    <div class="queue-stats">
+      <span class="stat">Pending: {{ moderationQueue.length }}</span>
+      <span class="stat">Approved: {{ approvedReviews.length }}</span>
+      <span class="stat">Rejected: {{ rejectedReviews.length }}</span>
+    </div>
+  </div>
+
+  <div class="moderation-queue">
+    <h3>Pending Reviews ({{ moderationQueue.length }})</h3>
+    
+    <div *ngFor="let review of moderationQueue; trackBy: trackByReviewId" class="review-moderation-card">
+      <div class="review-header">
+        <div class="review-meta">
+          <span class="product-id">Product: {{ review.productId }}</span>
+          <span class="rating">{{ '★'.repeat(review.rating) }}{{ '☆'.repeat(5-review.rating) }}</span>
+          <span class="submitted-date">{{ review.submittedAt | date:'short' }}</span>
+        </div>
+        <div class="flags">
+          <span *ngIf="review.flagged" class="flag flagged">🚩 Flagged</span>
+          <span *ngIf="review.suspiciousWords.length > 0" class="flag suspicious">
+            ⚠️ {{ review.suspiciousWords.length }} suspicious words
+          </span>
+          <span *ngIf="review.authorHistory.suspiciousActivity" class="flag author-warning">
+            👤 Suspicious author
+          </span>
+        </div>
+      </div>
+      
+      <div class="review-content">
+        <h4>{{ review.title }}</h4>
+        <p>{{ review.content }}</p>
+        <small>By {{ review.author }}</small>
+      </div>
+      
+      <div class="author-info">
+        <h5>Author History</h5>
+        <div class="author-stats">
+          <span>Reviews: {{ review.authorHistory.totalReviews }}</span>
+          <span>Avg Rating: {{ review.authorHistory.averageRating | number:'1.1-1' }}</span>
+          <span>Account Age: {{ review.authorHistory.accountAge }} days</span>
+          <span>Verified Purchases: {{ review.authorHistory.verifiedPurchases }}</span>
+        </div>
+      </div>
+      
+      <div class="moderation-actions">
+        <button (click)="approveReview(review.id)" class="approve-btn">✓ Approve</button>
+        <button (click)="rejectReview(review.id, 'Inappropriate content')" class="reject-btn">✗ Reject</button>
+        <button (click)="flagReview(review.id)" class="flag-btn" [disabled]="review.flagged">🚩 Flag</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="processed-reviews">
+    <div class="approved-section">
+      <h4>Recently Approved ({{ approvedReviews.length }})</h4>
+      <div *ngFor="let review of approvedReviews.slice(0, 5)" class="processed-review">
+        <span>{{ review.title }}</span>
+        <small>{{ review.moderatedAt | date:'short' }}</small>
+      </div>
+    </div>
+    
+    <div class="rejected-section">
+      <h4>Recently Rejected ({{ rejectedReviews.length }})</h4>
+      <div *ngFor="let review of rejectedReviews.slice(0, 5)" class="processed-review">
+        <span>{{ review.title }}</span>
+        <small>{{ review.rejectionReason }} - {{ review.moderatedAt | date:'short' }}</small>
+      </div>
+    </div>
+  </div>
+</div>

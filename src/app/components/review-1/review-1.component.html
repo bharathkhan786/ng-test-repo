@@ -1,0 +1,63 @@
+<div class="review-container">
+  <h2>Product Reviews</h2>
+  
+  <div class="review-form-section">
+    <h3>Write a Review</h3>
+    <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="review-form">
+      <div class="form-group">
+        <label>Product ID</label>
+        <input formControlName="productId" placeholder="Enter product ID" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Rating</label>
+        <select formControlName="rating" class="form-select">
+          <option value="1">1 Star</option>
+          <option value="2">2 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="5">5 Stars</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Review Title</label>
+        <input formControlName="title" placeholder="Enter review title" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Review Content</label>
+        <textarea formControlName="content" placeholder="Write your review..." class="form-textarea"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" formControlName="recommend"> I recommend this product
+        </label>
+      </div>
+      
+      <button type="submit" [disabled]="reviewForm.invalid || isSubmitting" class="submit-button">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Review' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="reviews-section">
+    <h3>Customer Reviews ({{ reviews.length }})</h3>
+    <div *ngFor="let review of reviews" class="review-item">
+      <div class="review-header">
+        <div class="rating">{{ '★'.repeat(review.rating) }}{{ '☆'.repeat(5-review.rating) }}</div>
+        <span class="verified" *ngIf="review.verified">✓ Verified Purchase</span>
+      </div>
+      <h4>{{ review.title }}</h4>
+      <p>{{ review.content }}</p>
+      <div class="review-footer">
+        <small>{{ review.createdAt | date:'medium' }}</small>
+        <button (click)="markHelpful(review.id)" class="helpful-button">
+          Helpful ({{ review.helpful || 0 }})
+        </button>
+        <button (click)="deleteReview(review.id)" class="delete-button">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

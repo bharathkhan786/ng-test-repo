@@ -1,0 +1,17 @@
+{
+  
+  "include": ["src/app/**/*.ts"],
+  "exclude": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "**/*.spec.ts",
+    "**/*.module.ts"
+  ],
+  "reporter": ["json-summary", "json", "lcov", "text-summary", "html"],
+  "all": true,
+  "check-coverage": false,
+  "statements": 50,
+  "branches": 50,
+  "functions": 50,
+  "lines": 50
+}
