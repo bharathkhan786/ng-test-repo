@@ -15,7 +15,7 @@ module.exports = {
     '\\.(html|scss)$': '<rootDir>/__mocks__/fileMock.js'
   },
   collectCoverage: true,
-  coverageDirectory: '<rootDir>/coverage/jest',
+  coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['json', 'lcov', 'text', 'html'],
   collectCoverageFrom: [
     'src/app/**/*.ts',
