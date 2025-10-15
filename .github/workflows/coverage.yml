@@ -45,7 +45,7 @@ jobs:
         run: |
           if [ -d "coverage" ]; then
             echo "✅ Coverage directory created successfully"
-            ls -la coverage/jest/
+            ls -la coverage/
           else
             echo "❌ Coverage directory not found"
             mkdir -p coverage
